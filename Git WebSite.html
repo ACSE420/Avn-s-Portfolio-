@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avn's Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ce0000; 
+            --secondary: #282828;
+            --text-primary: #f1f1f1;
+            --text-secondary: #aaa;
+            --bg-dark: #202020;
+            --bg-light: #181818;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            scroll-behavior: smooth;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .channel-banner {
+            width: 100%;
+            height: 200px;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .channel-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .channel-info {
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-dark);
+        }
+        
+        .channel-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .channel-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .channel-details h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .channel-stats {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .channel-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .subscribe-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .subscribe-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .channel-nav {
+            display: flex;
+            border-bottom: 1px solid #333;
+            background-color: var(--bg-dark);
+        }
+        
+        .channel-nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 1rem 2rem;
+            font-size: 0.9rem;
+            position: relative;
+        }
+        
+        .channel-nav a.active:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary);
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .section {
+            padding: 2rem 0;
+        }
+        
+        .section h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .carousel {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 1rem 0;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+        
+        .carousel::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .carousel img {
+            scroll-snap-align: start;
+            height: 300px;
+            width: auto;
+            border-radius: 8px;
+            object-fit: cover;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        
+        .carousel img:hover {
+            transform: scale(1.02);
+        }
+        
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .video-container {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .video-container:hover {
+            transform: translateY(-5px);
+        }
+        
+        .video-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Vertical video specific */
+        .vertical-video {
+            width: 180px;
+            height: 320px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        
+        /* Updated Lightbox styles for portrait videos */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .lightbox-portrait {
+            width: auto;
+            max-width: 100%;
+            height: 90vh;
+            max-height: 90vh;
+            background-color: transparent;
+            object-fit: contain;
+        }
+        
+        .lightbox-horizontal {
+            width: 90vw;
+            height: auto;
+            max-height: 90vh;
+        }
+        
+        .lightbox-close {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .lightbox video {
+            border-radius: 8px;
+            background-color: #000;
+        }
+        
+        /* Work experience styles */
+        .experience-item {
+            margin-bottom: 2rem;
+            background-color: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .experience-item h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .experience-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .experience-desc {
+            margin-left: 1rem;
+        }
+        
+        .experience-desc li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Skills grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .skill-card {
+            background-color: var(--bg-light);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .skill-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        /* Horizontal Videos Grid */
+        .video-grid-horizontal {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .video-card-horizontal {
+            background-color: var(--bg-light);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .video-card-horizontal:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .video-wrapper {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+        }
+        
+        .horizontal-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        
+        .video-overlay:hover {
+            opacity: 0;
+        }
+        
+        .play-btn {
+            background: rgba(206, 0, 0, 0.8);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .video-info {
+            padding: 1rem;
+        }
+        
+        .video-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .video-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Scroll Animation Styles */
+        .section, 
+        .video-grid-horizontal,
+        .skills-grid,
+        .experience-item,
+        .carousel,
+        .channel-info,
+        .channel-nav {
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        
+        .animate-in {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        @media (max-width: 768px) {
+            .channel-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .channel-avatar {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .channel-nav {
+                justify-content: center;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .vertical-video {
+                width: 150px;
+                height: 267px;
+            }
+            
+            .video-grid-horizontal {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Avn's Portfolio</div>
+        <div class="channel-actions">
+            <a href="#contact" class="subscribe-btn">Contact</a>
+        </div>
+    </header>
+    
+    <div class="channel-banner">
+        <img src="banner.jpg" alt="Banner">
+    </div>
+    
+    <div class="channel-info">
+        <div class="channel-avatar">
+            <img src="pfp.jpg" alt="Avnish Kumar">
+        </div>
+        <div class="channel-details">
+            <h1>Avnish Kumar</h1>
+            <div class="channel-stats">Video Editor • Graphic Designer • Social Media Manager</div>
+            <div class="channel-stats">
+                <span><i class="fas fa-envelope"></i> avnishsharma0338@gmail.com</span> | 
+                <span><i class="fas fa-phone"></i> +91 7509794126</span>
+            </div>
+            <div class="channel-actions">
+                <a href="https://www.instagram.com/zavn_senpai/" target="_blank" class="subscribe-btn"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="https://www.linkedin.com/in/avnish-sharma-3b5aa2260/" target="_blank" class="subscribe-btn"><i class="fab fa-linkedin"></i> LinkedIn</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="channel-nav">
+        <a href="#work" class="active">Work</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+    </div>
+
+    <div class="content-container">
+        <section id="work" class="section">
+            <h2>Welcome to My Creative Space</h2>
+            <p>I'm Avnish Kumar, specialized in video editing and social media marketing, Currently pursuing my B.Tech in Computer Science Engineering at JECRC University, Jaipur, I combine my technical knowledge with good understanding of Designs and colours to deliver compelling digital content.</p>
+        </section>
+
+         <!-- Vertical Videos Section -->
+        <section class="section">
+            <h3>Portrait Edits for Social Media</h3>
+            <div class="carousel">
+                <div class="video-container">
+                    <video class="vertical-video" controls>
+                        <source src="vid1.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-container">
+                    <video class="vertical-video" controls>
+                        <source src="vid5.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-container">
+                    <video class="vertical-video" controls>
+                        <source src="vi1.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <br>
+                <div class="video-container">
+                    <video class="vertical-video" controls>
+                        <source src="vi2.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-container">
+                    <video class="vertical-video" controls>
+                        <source src="vid4.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="video-container">
+                    <video class="vertical-video" controls>
+                        <source src="vid2.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h3>Seamless carousel</h3> 
+            <div class="carousel">
+                <img src="c1.png" alt="Instagram carousel">
+                <img src="c2.png" alt="Instagram carousel">
+                <img src="c3.png" alt="Instagram carousel">
+                <img src="c4.png" alt="Instagram carousel">
+                <img src="c5.png" alt="Instagram carousel">
+            </div>
+        </section>
+
+        <section class="section">
+            <h3>Some Cool Creatives</h3>
+            <div class="carousel">
+                <img src="p4.png" alt="Creative work">
+                <img src="p7.png" alt="Creative work">
+                <img src="p6.png" alt="Creative work">
+                <img src="p5.png" alt="Creative work">
+                <img src="p8.png" alt="">
+                <img src="10.png" alt="">
+                <img src="p11.png" alt="">
+            </div>
+        </section>
+
+        <section class="section">
+            <h3>Creatives for Ramadan</h3>
+            <p>These are some Creatives I made while Ramadan campaign in Noor Ride</p>
+            <div class="carousel">
+                <img src="p1.png" alt="Ramadan creative">
+                <img src="p2.png" alt="Ramadan creative">
+                <img src="p3.png" alt="Ramadan creative">
+                <img src="p9.png" alt="Ramadan creative">
+            </div>
+        </section>
+
+        <section class="section">
+            <h3>Some in app popup Designs</h3>
+            <div class="carousel">
+                <img src="1.png" alt="App popup design">
+                <img src="2.png" alt="App popup design">
+                <img src="3.png" alt="App popup design">
+                <img src="4.png" alt="App popup design">
+            </div>
+        </section>
+
+       <!-- Horizontal Videos Section -->
+<section class="section">
+    <h3>Horizontal Videos Edits</h3>
+    
+    <div class="video-grid-horizontal">
+        <!-- Video 1 -->
+        <div class="video-card-horizontal">
+            <div class="video-wrapper">
+                <video class="horizontal-video" poster="h1-poster.jpg" controls>
+                    <source src="h6.mp4" type="video/mp4">
+                    Your browser does not support HTML5 video.
+                </video>
+                <div class="video-overlay">
+                    <button class="play-btn"><i class="fas fa-play"></i></button>
+                </div>
+            </div>
+            <div class="video-info">
+                <h3>Commercial Ad</h3>
+                <p>Noor Ride</p>
+            </div>
+        </div>
+        
+        <!-- Video 2 -->
+        <div class="video-card-horizontal">
+            <div class="video-wrapper">
+                <video class="horizontal-video" poster="h2-poster.jpg" controls>
+                    <source src="h3.mp4" type="video/mp4">
+                    Your browser does not support HTML5 video.
+                </video>
+                <div class="video-overlay">
+                    <button class="play-btn"><i class="fas fa-play"></i></button>
+                </div>
+            </div>
+            <div class="video-info">
+                <h3>Product Demo (cinematics + edit by me)</h3>
+                <p>Lenovo Laptop / Samsung Camera showcase</p>
+            </div>
+        </div>
+        
+        <!-- Video 3 -->
+        <div class="video-card-horizontal">
+            <div class="video-wrapper">
+                <video class="horizontal-video" poster="h3-poster.jpg" controls>
+                    <source src="h2.mp4" type="video/mp4">
+                    Your browser does not support HTML5 video.
+                </video>
+                <div class="video-overlay">
+                    <button class="play-btn"><i class="fas fa-play"></i></button>
+                </div>
+            </div>
+            <div class="video-info">
+                <h3>The Dream (cinematics + Edited by me)</h3>
+                <p>concept what a dream feels like</p>
+            </div>
+        </div>
+        
+        <!-- Video 4 -->
+        <div class="video-card-horizontal">
+            <div class="video-wrapper">
+                <video class="horizontal-video" poster="h4-poster.jpg" controls>
+                    <source src="h1.mp4" type="video/mp4">
+                    Your browser does not support HTML5 video.
+                </video>
+                <div class="video-overlay">
+                    <button class="play-btn"><i class="fas fa-play"></i></button>
+                </div>
+            </div>
+            <div class="video-info">
+                <h3>The Home (cinematics + Edited by me )</h3>
+                <p>a beautiful shoot of my home</p>
+            </div>
+        </div>
+
+        <!-- Video 5 -->
+        <div class="video-card-horizontal">
+            <div class="video-wrapper">
+                <video class="horizontal-video" poster="h2-poster.jpg" controls>
+                    <source src="h4.mp4" type="video/mp4">
+                    Your browser does not support HTML5 video.
+                </video>
+                <div class="video-overlay">
+                    <button class="play-btn"><i class="fas fa-play"></i></button>
+                </div>
+            </div>
+            <div class="video-info">
+                <h3>Random Frames (cinematics + Edited by me)</h3>
+                <p>Beautiful things from my daily life</p>
+            </div>
+        </div>
+
+        <!-- Video 6 -->
+        <div class="video-card-horizontal">
+            <div class="video-wrapper">
+                <video class="horizontal-video" poster="h2-poster.jpg" controls>
+                    <source src="h5.mp4" type="video/mp4">
+                    Your browser does not support HTML5 video.
+                </video>
+                <div class="video-overlay">
+                    <button class="play-btn"><i class="fas fa-play"></i></button>
+                </div>
+            </div>
+            <div class="video-info">
+                <h3>Cinematic city (cinematics + Edited by me)</h3>
+                <p>cinematics of my beautiful city</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <h2>About Me</h2>
+            <p>My objective is to utilize my creativity, skills, and experience in social media marketing and video editing to contribute effectively to projects while learning and growing professionally.</p>
+            
+            <h2>Experience</h2>
+            <div class="experience-item">
+                <h3>Social Media and Marketing Intern</h3>
+                <div class="experience-date">Noor Ride | Oct 2024 - April 2025</div>
+                <ul class="experience-desc">
+                    <li>Learned a lot about social media marketing</li>
+                    <li>Learned new tools like figma, after Effects according to market needs</li>
+                    <li>Get to know more about corporate world and how should I proceed in my career</li>
+                    <li>Made some really good connections with experienced people in the company</li>
+                </ul>
+                <br>
+                <div class="experience-date">Go-Blu EV | Oct 2024 - Jan 2025</div>
+                <ul class="experience-desc">
+                    <li>Grew social media presence</li>
+                    <li>Created engaging content and marketing strategies tailored for Melbourne audiences</li>
+                    <li>Worked with experienced Team get to learn different aspects of marketing</li>
+                </ul>
+            </div>
+            
+            <div class="experience-item">
+                <h3>Freelancer</h3>
+                <div class="experience-date">Social media manager, Video Editor and Graphic Designer | 3+ Years Experience</div>
+                <ul class="experience-desc">
+                    <li>Delivered high-quality work and services to satisfy diverse client needs</li>
+                    <li>Built strong relationships with clients throughout time and always Best work delivery</li>
+                </ul>
+            </div>
+            
+            <div class="experience-item">
+                <h3>Video Editor</h3>
+                <div class="experience-date">JECRC Incubation Center (JIC)</div>
+                <ul class="experience-desc">
+                    <li>Created promotional and informational videos for the incubation center</li>
+                </ul>
+            </div>
+
+            <h2>Technical Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>Video Editing</h3>
+                    <p>Premiere Pro<br>DaVinci Resolve<br>Filmora<br>After Effects</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Graphic Design</h3>
+                    <p>Figma<br>Photoshop<br>Canva</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Programming</h3>
+                    <p>Python<br>C++<br>HTML/CSS</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Social Media</h3>
+                    <p>Strategy<br>Content Creation<br>Marketing</p>
+                </div>
+            </div>
+
+            <h2>Education</h2>
+            <div class="experience-item">
+                <h3>B.Tech in Computer Science Engineering</h3>
+                <div class="experience-date">JECRC University, Jaipur (Ongoing)</div>
+            </div>
+            <div class="experience-item">
+                <h3>Schooling</h3>
+                <div class="experience-date">Kendriya Vidyalaya, Morena</div>
+            </div>
+            
+            <h2>Soft Skills & Hobbies</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>Soft Skills</h3>
+                    <ul style="list-style-type: none; padding-left: 0;">
+                        <li>Colour Theory Knowledge</li>
+                        <li>Time Management</li>
+                        <li>Storytelling and Creative Thinking</li>
+                        <li>Fast Learner</li>
+                        <li>Strong Communication Skills</li>
+                    </ul>
+                </div>
+                <div class="skill-card">
+                    <h3>Hobbies</h3>
+                    <ul style="list-style-type: none; padding-left: 0;">
+                        <li>Sketching</li>
+                        <li>Football</li>
+                        <li>Designing & Craft</li>
+                        <li>Exploring New Places</li>
+                        <li>Voice Acting</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <blockquote style="margin-top: 2rem; font-style: italic; border-left: 3px solid var(--primary); padding-left: 1rem;">
+                "Creativity is the power to connect the seemingly unconnected."
+            </blockquote>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <h2>Contact Me</h2>
+            <p>Ready to collaborate or have questions? Reach out!</p>
+            <div style="margin-top: 1.5rem;">
+                <p><i class="fas fa-envelope"></i> <strong>Email:</strong> avnishsharma0338@gmail.com</p>
+                <p><i class="fas fa-phone"></i> <strong>Phone:</strong> +91 7509794126</p>
+                <p><i class="fab fa-instagram"></i> <strong>Instagram:</strong> <a href="https://www.instagram.com/zavn_senpai/" target="_blank" style="color: var(--primary);">@zavn_senpai</a></p>
+                <p><i class="fab fa-linkedin"></i> <strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/avnish-sharma-3b5aa2260/" target="_blank" style="color: var(--primary);">Avnish Sharma</a></p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <div class="lightbox-content" id="lightbox-content"></div>
+    </div>
+
+    <script>
+        // Lightbox functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxContent = document.getElementById('lightbox-content');
+        const closeBtn = document.querySelector('.lightbox-close');
+        
+        // Open lightbox for portrait videos
+        document.querySelectorAll('.vertical-video').forEach(video => {
+            video.addEventListener('click', () => {
+                const videoClone = video.cloneNode(true);
+                videoClone.controls = true;
+                videoClone.classList.add('lightbox-portrait');
+                lightboxContent.innerHTML = '';
+                lightboxContent.appendChild(videoClone);
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // Play the video when opened
+                setTimeout(() => {
+                    videoClone.play();
+                }, 300);
+            });
+        });
+        
+        // Open lightbox for horizontal videos
+        document.querySelectorAll('.horizontal-video').forEach(video => {
+            video.addEventListener('click', () => {
+                const videoClone = video.cloneNode(true);
+                videoClone.controls = true;
+                videoClone.classList.add('lightbox-horizontal');
+                lightboxContent.innerHTML = '';
+                lightboxContent.appendChild(videoClone);
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // Play the video when opened
+                setTimeout(() => {
+                    videoClone.play();
+                }, 300);
+            });
+        });
+        
+        // Open lightbox for images
+        document.querySelectorAll('.carousel img').forEach(img => {
+            img.addEventListener('click', () => {
+                lightboxContent.innerHTML = `<img src="${img.src}" alt="${img.alt}" style="max-width: 90vw; max-height: 90vh;">`;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+        
+        // Close lightbox
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // Pause any playing video
+            const video = lightboxContent.querySelector('video');
+            if (video) {
+                video.pause();
+            }
+        }
+        
+        closeBtn.addEventListener('click', closeLightbox);
+        
+        // Close when clicking outside content
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+        
+        // Navigation active state
+        document.querySelectorAll('.channel-nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                document.querySelectorAll('.channel-nav a').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                this.classList.add('active');
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        
+        // Update active nav link on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section');
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.scrollY >= sectionTop - 100) {
+                    currentSection = '#' + section.getAttribute('id');
+                }
+            });
+            
+            document.querySelectorAll('.channel-nav a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Video Play Button Functionality
+        document.querySelectorAll('.play-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const videoWrapper = e.target.closest('.video-wrapper');
+                const video = videoWrapper.querySelector('video');
+                video.controls = true;
+                video.play();
+                videoWrapper.querySelector('.video-overlay').style.display = 'none';
+            });
+        });
+        
+        // Reset overlay when video ends
+        document.querySelectorAll('.horizontal-video').forEach(video => {
+            video.addEventListener('ended', function() {
+                this.controls = false;
+                const overlay = this.closest('.video-wrapper').querySelector('.video-overlay');
+                if (overlay) {
+                    overlay.style.display = 'flex';
+                }
+            });
+        });
+        
+        // Scroll Animation Functionality
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.section, .video-grid-horizontal, .skills-grid, .experience-item, .carousel, .channel-info, .channel-nav');
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementTop < windowHeight - 100) {
+                    element.classList.add('animate-in');
+                } else {
+                    element.classList.remove('animate-in');
+                }
+            });
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            animateOnScroll();
+        });
+        
+        // Run on scroll
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Run on resize (in case layout changes)
+        window.addEventListener('resize', animateOnScroll);
+    </script>
+</body>
+</html>
